@@ -1,3 +1,4 @@
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
@@ -15,9 +16,40 @@ import { ComplaintAssignmentsModule } from './complaint-assignments/complaint-as
 import { CategoriesModule } from './categories/categories.module.js';
 import { NotificationsModule } from './notifications/notifications.module.js';
 import { FeedbackModule } from './feedback/feedback.module.js';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
-  imports: [AuthModule, UsersModule, ComplaintTagsModule, ComplaintAttachmentModule, AuditModule, DepartmentModule, StaffProfileModule, TagModule, ComplaintHistoryModule, ComplaintsModule, ComplaintAssignmentsModule, CategoriesModule, NotificationsModule, FeedbackModule],
+  imports: [
+    AuthModule,
+    UsersModule,
+    ComplaintTagsModule,
+    ComplaintAttachmentModule,
+    AuditModule,
+    DepartmentModule,
+    StaffProfileModule,
+    TagModule,
+    ComplaintHistoryModule,
+    ComplaintsModule,
+    ComplaintAssignmentsModule,
+    CategoriesModule,
+    NotificationsModule,
+    FeedbackModule,
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: configService.get<number>('DB_PORT'),
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
