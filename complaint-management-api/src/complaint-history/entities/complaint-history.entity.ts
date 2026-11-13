@@ -8,6 +8,7 @@ import {
   Index,
 } from 'typeorm';
 import { User } from '../../users/entities/user.entity.js';
+import { ComplaintStatus } from '../../complaints/enums/complaint-status.enum.js';
 
 @Entity('complaint_history')
 @Index(['complaintId', 'changedAt'])
@@ -18,14 +19,14 @@ export class ComplaintHistory {
   @Column()
   complaintId: number;
 
-  @Column({ type: 'varchar', length: 10 })
-  changedById: string;
+  @Column()
+  changedById: number;
 
-  @Column({ type: 'varchar', length: 50, nullable: true })
-  oldStatus: string;
+  @Column({ type: 'enum', enum: ComplaintStatus, nullable: true })
+  oldStatus: ComplaintStatus;
 
-  @Column({ type: 'varchar', length: 50 })
-  newStatus: string;
+  @Column({ type: 'enum', enum: ComplaintStatus })
+  newStatus: ComplaintStatus;
 
   @Column({ type: 'text', nullable: true })
   remarks: string;
