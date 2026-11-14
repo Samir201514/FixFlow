@@ -1,34 +1,37 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Query, UseGuards, ForbiddenException } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { FeedbackService } from './feedback.service.js';
 import { CreateFeedbackDto } from './dto/create-feedback.dto.js';
-import { UpdateFeedbackDto } from './dto/update-feedback.dto.js';
+import { FeedbackQueryDto } from './dto/feedback-query.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { Roles } from '../common/decorators/roles.decorator.js';
+import { RolesGuard } from '../common/guards/roles.guard.js';
+import { AuditEntity } from '../common/decorators/audit-entity.decorator.js';
+import { Feedback } from './entities/feedback.entity.js';
 
-@Controller('feedback')
+@ApiTags('Feedback')
+@ApiBearerAuth()
+@AuditEntity(Feedback, { loadBefore: false })
+@Controller()
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
-  @Post()
-  create(@Body() createFeedbackDto: CreateFeedbackDto) {
-    return this.feedbackService.create(createFeedbackDto);
+  @Post('complaints/:id/feedback')
+  @Roles(['USER'])
+  @UseGuards(RolesGuard)
+  create(@Param('id', ParseIntPipe) id: number, @Body() dto: CreateFeedbackDto, @CurrentUser() user: any) {
+    return this.feedbackService.create(id, dto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.feedbackService.findAll();
+  @Get('complaints/:id/feedback')
+  findByComplaint(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: any) {
+    return this.feedbackService.findByComplaint(id, user);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.feedbackService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFeedbackDto: UpdateFeedbackDto) {
-    return this.feedbackService.update(+id, updateFeedbackDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.feedbackService.remove(+id);
+  @Get('feedback')
+  @Roles(['ADMIN'])
+  @UseGuards(RolesGuard)
+  findAll(@Query() query: FeedbackQueryDto) {
+    return this.feedbackService.findAll(query);
   }
 }

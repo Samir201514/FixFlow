@@ -1,34 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service.js';
-import { CreateNotificationDto } from './dto/create-notification.dto.js';
-import { UpdateNotificationDto } from './dto/update-notification.dto.js';
+import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { NotificationQueryDto } from './dto/notification-query.dto.js';
 
+@ApiTags('Notifications')
+@ApiBearerAuth()
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
-  @Post()
-  create(@Body() createNotificationDto: CreateNotificationDto) {
-    return this.notificationsService.create(createNotificationDto);
-  }
-
   @Get()
-  findAll() {
-    return this.notificationsService.findAll();
+  findMine(@CurrentUser() user: any, @Query() query: NotificationQueryDto) {
+    return this.notificationsService.findMine(user.userId, query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.notificationsService.findOne(+id);
+  // Keep this route before :id/read so "read-all" is not parsed as an id.
+  @Patch('read-all')
+  markAllRead(@CurrentUser() user: any) {
+    return this.notificationsService.markAllRead(user.userId);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateNotificationDto: UpdateNotificationDto) {
-    return this.notificationsService.update(+id, updateNotificationDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.notificationsService.remove(+id);
+  @Patch(':id/read')
+  markRead(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: any) {
+    return this.notificationsService.markRead(id, user.userId);
   }
 }
