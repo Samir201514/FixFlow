@@ -10,9 +10,9 @@ import {
   Query,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { AuditEntity } from '../common/decorators/audit-entity.decorator';
-import { Roles } from '../auth/decorators/roles.decorator';
-import { Role } from '../users/enums/role.enum';
+import { AuditEntity } from '../common/decorators/audit-entity.decorator.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { UserRole } from '../users/enums/user-role.enum.js';
 import { CreateTagDto } from './dto/create-tag.dto';
 import { TagQueryDto } from './dto/tag-query.dto';
 import { UpdateTagDto } from './dto/update-tag.dto';
@@ -27,7 +27,7 @@ export class TagsController {
   constructor(private readonly tagsService: TagsService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Create a tag' })
   create(@Body() dto: CreateTagDto) {
     return this.tagsService.create(dto);
@@ -46,7 +46,7 @@ export class TagsController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Rename / update a tag' })
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -56,7 +56,7 @@ export class TagsController {
   }
 
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(UserRole.ADMIN)
   @ApiOperation({ summary: 'Delete a tag together with its complaint links' })
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.tagsService.remove(id);

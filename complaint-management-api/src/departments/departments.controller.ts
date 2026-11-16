@@ -15,11 +15,11 @@ import { Department } from './entities/department.entity.js';
 import { CreateDepartmentDto } from './dto/create-department.dto.js';
 import { UpdateDepartmentDto } from './dto/update-department.dto.js';
 import { DepartmentQueryDto } from './dto/department-query.dto.js';
-import { Roles } from '../common/decorators/roles.decorator'; // missing
-import { CurrentUser } from '../common/decorators/current-user.decorator'; // missing
-import { AuditEntity } from '../common/decorators/audit-entity.decorator'; // missing
-import { UserRole } from '../users/enums/user-role.enum'; // missing
-import { User } from '../users/entities/user.entity'; // missing
+import { Roles } from '../auth/decorators/roles.decorator.js';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import { AuditEntity } from '../common/decorators/audit-entity.decorator.js';
+import { UserRole } from '../users/enums/user-role.enum.js';
+import { User } from '../users/entities/user.entity.js';
 
 @ApiTags('Departments')
 @ApiBearerAuth()

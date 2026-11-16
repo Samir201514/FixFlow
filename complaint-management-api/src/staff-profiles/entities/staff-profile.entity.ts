@@ -1,10 +1,10 @@
 import {
   Column, CreateDateColumn, Entity, JoinColumn, ManyToOne,
-  OneToMany, OneToOne, PrimaryGeneratedColumn,
+  OneToMany, OneToOne, PrimaryGeneratedColumn, type Relation,
 } from 'typeorm';
-import { User } from '../../users/entities/user.entity';
-import { Department } from '../../departments/entities/department.entity';
-import { ComplaintAssignment } from '../../complaint-assignments/entities/complaint-assignment.entity';
+import { User } from '../../users/entities/user.entity'; // miss
+import { Department } from '../../departments/entities/department.entity.js';
+import { ComplaintAssignment } from '../../complaint-assignments/entities/complaint-assignment.entity'; // miss
 
 @Entity('staff_profiles')
 export class StaffProfile {
@@ -31,12 +31,12 @@ export class StaffProfile {
 
   @OneToOne(() => User, (u) => u.staffProfile, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'user_id' })
-  user: User;
+  user: Relation<User>;
 
   @ManyToOne(() => Department, (d) => d.staffProfiles, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'department_id' })
-  department: Department;
+  department: Relation<Department>;
 
   @OneToMany(() => ComplaintAssignment, (a) => a.staffProfile)
-  assignments: ComplaintAssignment[];
+  assignments: Relation<ComplaintAssignment>[];
 }

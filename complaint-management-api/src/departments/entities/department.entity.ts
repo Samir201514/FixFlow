@@ -19,7 +19,7 @@ export class Department {
   @Column({ length: 100, unique: true })
   name: string;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ name: 'department_head_id', type: 'int', nullable: true })
   departmentHeadId: number | null;
 
   @Column({ type: 'text', nullable: true })
