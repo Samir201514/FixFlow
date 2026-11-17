@@ -11,7 +11,7 @@ import {
   MinLength,
   IsEnum,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum.js';
+import { UserRoles } from '../../common/enums/user-roles.enum.js';
 
 export class CreateUserDto {
   @IsString()
@@ -42,6 +42,6 @@ export class CreateUserDto {
   phone: string;
 
   @IsNotEmpty()
-  @IsEnum(UserRole, { message: 'Role must be ADMIN, STAFF, or USER' })
-  role: UserRole;
+  @IsEnum(UserRoles, { message: 'Role must be ADMIN, STAFF, or USER' })
+  role: UserRoles;
 }

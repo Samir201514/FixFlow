@@ -12,7 +12,7 @@ import { Exclude } from 'class-transformer';
 import { StaffProfile } from '../../staff-profile/entities/staff-profile.entity.js';
 import { Complaint } from '../../complaints/entities/complaint.entity.js';
 import { Notification } from '../../notifications/entities/notification.entity.js';
-import { UserRole } from '../../common/enums/user-role.enum.js';
+import { UserRoles } from '../../common/enums/user-roles.enum.js';
 
 @Entity('users')
 export class User {
@@ -32,8 +32,8 @@ export class User {
   @Column({ length: 15, nullable: true })
   phone: string;
 
-  @Column({ enum: UserRole, default: UserRole.USER })
-  role: UserRole;
+  @Column({ enum: UserRoles, default: UserRoles.USER })
+  role: UserRoles;
 
   @Column({ default: true })
   isActive: boolean;
