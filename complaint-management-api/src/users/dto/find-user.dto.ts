@@ -7,8 +7,8 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { UserRole } from '../../common/enums/user-role.enum.js';
 import { Transform, Type } from 'class-transformer';
+import { UserRoles } from '../../common/enums/user-roles.enum.js';
 
 export class FindUserDto {
   @IsInt()
@@ -24,9 +24,9 @@ export class FindUserDto {
   @IsOptional()
   limit: number = 10;
 
-  @IsEnum(UserRole)
+  @IsEnum(UserRoles)
   @IsOptional()
-  role?: UserRole;
+  role?: UserRoles;
 
   @IsBoolean()
   @Transform(({ value }) => {
