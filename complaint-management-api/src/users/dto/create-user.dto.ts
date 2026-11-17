@@ -5,7 +5,6 @@ import {
   MaxLength,
   IsEmail,
   IsNotEmpty,
-  IsIn,
   Matches,
   IsPhoneNumber,
   MinLength,
@@ -16,6 +15,7 @@ import { UserRoles } from '../../common/enums/user-roles.enum.js';
 export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
+  @MinLength(2)
   @MaxLength(100)
   @Transform(({ value }) => value?.trim().toUpperCase())
   name: string;

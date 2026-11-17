@@ -1,5 +1,9 @@
 import { ConfigService } from '@nestjs/config';
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -98,6 +102,16 @@ export class UsersService {
         totalPages: Math.ceil(total / qurey.limit),
       },
     };
+  }
+
+  async findById(id: number): Promise<{ message: string; data: User }> {
+    const user = await this.userRepo.findOneBy({ userId: id });
+
+    if (!user || !user.isActive) {
+      throw new UnauthorizedException('User is not active');
+    }
+
+    return { message: 'User Found.', data: user };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
