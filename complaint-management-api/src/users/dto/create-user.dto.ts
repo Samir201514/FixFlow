@@ -62,7 +62,7 @@ export class CreateUserDto {
   @IsPhoneNumber()
   @IsOptional()
   @MaxLength(15)
-  phone: string;
+  phone?: string;
 
   @ApiProperty({
     enum: UserRoles,

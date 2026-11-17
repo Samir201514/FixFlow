@@ -114,6 +114,14 @@ export class UsersService {
     return { message: 'User Found.', data: user };
   }
 
+  async findByEmail(email: string): Promise<User | null> {
+    return this.userRepo
+      .createQueryBuilder('user')
+      .addSelect('user.password')
+      .where('user.email = :email', { email })
+      .getOne();
+  }
+
   update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
