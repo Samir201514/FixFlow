@@ -5,9 +5,10 @@ import { ComplaintTag } from './entities/complaint-tag.entity.js';
 import { ComplaintTagController } from './complaint-tags.controller.js';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ComplaintTag])],
-  controllers: [ComplaintTagController],
-  providers: [ComplaintTagService],
-  exports: [ComplaintTagService],
+    imports: [TypeOrmModule.forFeature([ComplaintTag])],
+    controllers: [ComplaintTagController],
+    providers: [ComplaintTagService],
+    exports: [ComplaintTagService],
 })
-export class ComplaintTagModule {}
+export class ComplaintTagModule {
+}
