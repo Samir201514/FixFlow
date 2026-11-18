@@ -1,7 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { ArrayMaxSize, ArrayUnique, IsArray, IsInt, IsNotEmpty, IsOptional, IsString, MaxLength, Min, } from 'class-validator';
-7
 export class CreateComplaintDto {
     @ApiProperty({ example: 'Projector not working' })
     @IsString()
