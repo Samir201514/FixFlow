@@ -1,5 +1,16 @@
+import { JwtAuthGuard } from './../common/guards/jwt-auth.guard.js';
+import { UserRoles } from './../common/enums/user-roles.enum.js';
 import {
-  Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards,
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { CategoriesService } from './categories.service.js';
@@ -20,9 +31,11 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @Roles(['ADMIN'])
-  @UseGuards(RolesGuard)
-  create(@Body() dto: CreateCategoryDto) { return this.categoriesService.create(dto); }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
+  create(@Body() dto: CreateCategoryDto) {
+    return this.categoriesService.create(dto);
+  }
 
   @Get()
   findAll(@Query() query: CategoryQueryDto, @CurrentUser() actor: any) {
@@ -35,14 +48,19 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  @Roles(['ADMIN'])
-  @UseGuards(RolesGuard)
-  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateCategoryDto) {
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() dto: UpdateCategoryDto,
+  ) {
     return this.categoriesService.update(id, dto);
   }
 
   @Delete(':id')
-  @Roles(['ADMIN'])
-  @UseGuards(RolesGuard)
-  remove(@Param('id', ParseIntPipe) id: number) { return this.categoriesService.remove(id); }
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRoles.ADMIN)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.categoriesService.remove(id);
+  }
 }

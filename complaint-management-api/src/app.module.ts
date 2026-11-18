@@ -7,9 +7,6 @@ import { UsersModule } from './users/users.module.js';
 import { ComplaintTagModule } from './complaint-tags/complaint-tags.module.js';
 import { ComplaintAttachmentModule } from './complaint-attachment/complaint-attachment.module.js';
 import { AuditModule } from './audit/audit.module.js';
-import { DepartmentModule } from './department/department.module.js';
-import { StaffProfileModule } from './staff-profile/staff-profile.module.js';
-import { TagModule } from './tag/tag.module.js';
 import { ComplaintHistoryModule } from './complaint-history/complaint-history.module.js';
 import { ComplaintsModule } from './complaints/complaints.module.js';
 import { ComplaintAssignmentModule } from './complaint-assignments/complaint-assignments.module.js';
@@ -20,6 +17,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { envValidationSchema } from './config/env.validation.js';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware.js';
 import { LoggerMiddleware } from './common/middleware/logger.middleware.js';
+import { DepartmentsModule } from './department/department.module.js';
+import { StaffProfilesModule } from './staff-profile/staff-profile.module.js';
+import { TagsModule } from './tag/tag.module.js';
 
 @Module({
   imports: [
@@ -33,9 +33,9 @@ import { LoggerMiddleware } from './common/middleware/logger.middleware.js';
     ComplaintTagModule,
     ComplaintAttachmentModule,
     AuditModule,
-    DepartmentModule,
-    StaffProfileModule,
-    TagModule,
+    DepartmentsModule,
+    StaffProfilesModule,
+    TagsModule,
     ComplaintHistoryModule,
     ComplaintsModule,
     ComplaintAssignmentModule,

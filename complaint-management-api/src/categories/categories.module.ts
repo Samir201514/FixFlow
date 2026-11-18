@@ -10,6 +10,6 @@ import { Complaint } from '../complaints/entities/complaint.entity.js';
   imports: [TypeOrmModule.forFeature([Category, Department, Complaint])],
   controllers: [CategoriesController],
   providers: [CategoriesService],
-  exports: [CategoriesService, TypeOrmModule],
+  exports: [CategoriesService],
 })
 export class CategoriesModule {}

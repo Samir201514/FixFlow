@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
   Unique,
 } from 'typeorm';
-
+import type { Relation } from 'typeorm';
 import { Department } from '../../department/entities/department.entity.js';
 import { Complaint } from '../../complaints/entities/complaint.entity.js';
 import { Priority } from '../../common/enums/priority.enum.js';
@@ -41,7 +41,7 @@ export class Category {
     onDelete: 'RESTRICT',
   })
   @JoinColumn({ name: 'department_id', referencedColumnName: 'departmentId' })
-  department: Department;
+  department: Relation<Department>;
 
   @OneToMany(() => Complaint, (complaint) => complaint.category)
   complaints: Complaint[];

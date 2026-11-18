@@ -1,5 +1,11 @@
 import {
-  Column, CreateDateColumn, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  Entity,
+  Index,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import type { Relation } from 'typeorm';
 import { User } from '../../users/entities/user.entity.js';
@@ -33,7 +39,7 @@ export class Notification {
   @Column({ type: 'timestamptz', nullable: true })
   readAt: Date | null;
 
-  @ManyToOne(() => User, (user) => user.notifications, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.notification, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id', referencedColumnName: 'userId' })
   user: Relation<User>;
 
@@ -42,5 +48,5 @@ export class Notification {
     onDelete: 'SET NULL',
   })
   @JoinColumn({ name: 'complaint_id', referencedColumnName: 'complaintId' })
-  complaint: Relation<Complaint> | null;
+  complaint: Complaint;
 }
