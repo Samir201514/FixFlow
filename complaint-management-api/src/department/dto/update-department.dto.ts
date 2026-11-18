@@ -1,4 +1,22 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateDepartmentDto } from './create-department.dto.js';
+import { ApiPropertyOptional, PartialType } from "@nestjs/swagger";
+import { Type } from "class-transformer";
+import { IsBoolean, IsInt, IsOptional, Min } from "class-validator";
+import { CreateDepartmentDto } from "./create-department.dto.js";
 
-export class UpdateDepartmentDto extends PartialType(CreateDepartmentDto) {}
+export class UpdateDepartmentDto extends PartialType(CreateDepartmentDto) {
+  @ApiPropertyOptional({ example: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+
+  @ApiPropertyOptional({
+    example: 3,
+    nullable: true,
+    description: "User id of the new head. Send null to clear the head.",
+  })
+  @IsOptional() 
+  @Type(() => Number)
+  @IsInt()
+  @Min(1)
+  departmentHeadId?: number | null;
+}

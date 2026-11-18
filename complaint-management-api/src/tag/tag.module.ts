@@ -1,9 +1,13 @@
-import { Module } from '@nestjs/common';
-import { TagService } from './tag.service.js';
-import { TagController } from './tag.controller.js';
-
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { ComplaintTag } from "../complaints/entities/complaint.entity.js";
+import { Tag } from "./entities/tag.entity.js";
+import { TagsController } from "./tag.controller.js";
+import { TagsService } from "./tag.service.js";
 @Module({
-  controllers: [TagController],
-  providers: [TagService],
+  imports: [TypeOrmModule.forFeature([Tag, ComplaintTag])],
+  controllers: [TagsController],
+  providers: [TagsService],
+  exports: [TagsService, TypeOrmModule],
 })
-export class TagModule {}
+export class TagsModule {}
