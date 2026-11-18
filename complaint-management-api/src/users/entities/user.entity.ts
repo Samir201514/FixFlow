@@ -47,18 +47,18 @@ export class User {
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 
-  // @OneToOne('staff-profile', (staffProfile: StaffProfile) => {
-  //   staffProfile.user;
-  // })
-  // staffProfile: StaffProfile;
+  @OneToOne('staff-profile', (staffProfile: StaffProfile) => {
+    staffProfile.user;
+  })
+  staffProfile: StaffProfile;
 
-  // @OneToMany('complaint', (complaint: Complaint) => {
-  //   complaint.user;
-  // })
-  // complaint: Complaint;
+  @OneToMany('complaint', (complaint: Complaint) => {
+    complaint.user;
+  })
+  complaint: Complaint;
 
-  // @OneToMany('notification', (notification: Notification) => {
-  //   notification.user;
-  // })
-  // notification: Notification;
+  @OneToMany('notification', (notification: Notification) => {
+    notification.user;
+  })
+  notification: Notification;
 }
