@@ -4,7 +4,6 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
@@ -28,9 +27,18 @@ export class UsersService {
     private readonly configService: ConfigService,
   ) {}
 
-  async createUser(
-    createUserDto: CreateUserDto,
-  ): Promise<{ message: string; data: User }> {
+  async createUser(createUserDto: CreateUserDto): Promise<{
+    message: string;
+    data: {
+      userId: number;
+      name: string;
+      email: string;
+      phone: string | null;
+      role: UserRoles;
+      isActive: boolean;
+      createdAt: Date;
+    };
+  }> {
     createUserDto.email = createUserDto.email.trim().toLowerCase();
 
     const newUser = await this.userRepo.findOne({
@@ -53,7 +61,15 @@ export class UsersService {
     const user = await this.userRepo.save(create);
     return {
       message: `User created successfully`,
-      data: user,
+      data: {
+        userId: user.userId,
+        name: user.name,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+      },
     };
   }
 
@@ -110,8 +126,12 @@ export class UsersService {
   async findById(id: number): Promise<{ message: string; data: User }> {
     const user = await this.userRepo.findOneBy({ userId: id });
 
-    if (!user || !user.isActive) {
-      throw new UnauthorizedException('User is not active');
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!user.isActive) {
+      throw new ForbiddenException('User account is inactive');
     }
 
     return { message: 'User Found.', data: user };

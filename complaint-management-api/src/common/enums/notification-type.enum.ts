@@ -5,4 +5,3 @@ export enum NotificationType {
   RESOLVED = 'RESOLVED',
   CLOSED = 'CLOSED',
 }
-

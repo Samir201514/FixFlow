@@ -9,7 +9,7 @@ export class ComplaintAttachment {
     attachmentId: number;
     @Column()
     complaintId: number;
-    @Column()
+    @Column({ name: 'uploader_id' })
     uploaderId: number;
     @Column({ length: 255 })
     fileName: string;

@@ -25,7 +25,7 @@ async function bootstrap() {
     .setTitle('Fix Flow')
     .setDescription('A Smart Complaint & Issue Resolution Management REST API')
     .setVersion('1.0')
-    // .addBearerAuth()
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);

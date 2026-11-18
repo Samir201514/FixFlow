@@ -26,12 +26,12 @@ import { Category } from './entities/category.entity.js';
 @ApiTags('Categories')
 @ApiBearerAuth()
 @AuditEntity(Category)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoles.ADMIN)
   create(@Body() dto: CreateCategoryDto) {
     return this.categoriesService.create(dto);
@@ -48,7 +48,6 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoles.ADMIN)
   update(
     @Param('id', ParseIntPipe) id: number,
@@ -58,7 +57,6 @@ export class CategoriesController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoles.ADMIN)
   remove(@Param('id', ParseIntPipe) id: number) {
     return this.categoriesService.remove(id);
