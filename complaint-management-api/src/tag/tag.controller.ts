@@ -1,34 +1,61 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { TagService } from './tag.service.js';
-import { CreateTagDto } from './dto/create-tag.dto.js';
-import { UpdateTagDto } from './dto/update-tag.dto.js';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { AuditEntity } from "../common/decorators/audit-entity.decorator.js";
+import { Roles } from "../auth/decorators/roles.decorator.js";
+import { UserRole } from "../users/enums/user-role.enum.js";
+import { CreateTagDto } from "./dto/create-tag.dto.js";
+import { TagQueryDto } from "./dto/tag-query.dto.js";
+import { UpdateTagDto } from "./dto/update-tag.dto.js";
+import { Tag } from "./entities/tag.entity.js";
+import { TagsService } from "./tags.service.js";
 
-@Controller('tag')
-export class TagController {
-  constructor(private readonly tagService: TagService) {}
+@ApiTags("Tags")
+@ApiBearerAuth()
+@AuditEntity(Tag)
+@Controller("tags")
+export class TagsController {
+  constructor(private readonly tagsService: TagsService) {}
 
   @Post()
-  create(@Body() createTagDto: CreateTagDto) {
-    return this.tagService.create(createTagDto);
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Create a tag" })
+  create(@Body() dto: CreateTagDto) {
+    return this.tagsService.create(dto);
   }
 
   @Get()
-  findAll() {
-    return this.tagService.findAll();
+  @ApiOperation({ summary: "List tags" })
+  findAll(@Query() query: TagQueryDto) {
+    return this.tagsService.findAll(query);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.tagService.findOne(+id);
+  @Get(":id")
+  @ApiOperation({ summary: "Get one tag" })
+  findOne(@Param("id", ParseIntPipe) id: number) {
+    return this.tagsService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTagDto: UpdateTagDto) {
-    return this.tagService.update(+id, updateTagDto);
+  @Patch(":id")
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Rename / update a tag" })
+  update(@Param("id", ParseIntPipe) id: number, @Body() dto: UpdateTagDto) {
+    return this.tagsService.update(id, dto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.tagService.remove(+id);
+  @Delete(":id")
+  @Roles(UserRole.ADMIN)
+  @ApiOperation({ summary: "Delete a tag together with its complaint links" })
+  remove(@Param("id", ParseIntPipe) id: number) {
+    return this.tagsService.remove(id);
   }
 }
