@@ -8,8 +8,9 @@ import {
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity.js"; // missing
-import { StaffProfile } from "../../staff-profiles/entities/staff-profile.entity.js";
+//import { StaffProfile } from "../../staff-profiles/entities/staff-profile.entity.js";
 import { Category } from "../../categories/entities/category.entity.js"; // missing
+import { StaffProfile } from "../../staff-profile/entities/staff-profile.entity.js";
 
 @Entity("departments")
 export class Department {

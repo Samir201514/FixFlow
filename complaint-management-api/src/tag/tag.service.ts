@@ -5,12 +5,14 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
-import { paginate } from "../common/utils/paginate.js";
-import { ComplaintTag } from "../complaints/entities/complaint-tag.entity.js";
+//import { paginate } from "../common/utils/paginate.js";
+//import { ComplaintTag } from "../complaints/entities/complaint.entity.js";
 import { CreateTagDto } from "./dto/create-tag.dto.js";
 import { TagQueryDto } from "./dto/tag-query.dto.js";
 import { UpdateTagDto } from "./dto/update-tag.dto.js";
 import { Tag } from "./entities/tag.entity.js";
+import { paginate } from "../common/helpers/paginate.helper.js";
+import { ComplaintTag } from "../complaint-tags/entities/complaint-tag.entity.js";
 
 @Injectable()
 export class TagsService {
