@@ -4,4 +4,3 @@ export enum Priority {
   HIGH = 'HIGH',
   CRITICAL = 'CRITICAL',
 }
-

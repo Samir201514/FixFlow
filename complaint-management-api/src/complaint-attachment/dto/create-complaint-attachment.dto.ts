@@ -1,6 +1,12 @@
-import { IsString, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 export class CreateComplaintAttachmentDto {
+    @ApiProperty({ example: 101 })
+    @Type(() => Number)
+    @IsInt()
+    @Min(1)
+    complaintId: number;
     @ApiProperty({ description: 'The name of the uploaded file' })
     @IsString()
     @IsNotEmpty()
@@ -13,4 +19,5 @@ export class CreateComplaintAttachmentDto {
     @IsString()
     @IsOptional()
     fileType?: string;
+
 }

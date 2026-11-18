@@ -4,4 +4,3 @@ export const AuditEntity = (
   entity: any,
   options?: { loadBefore?: boolean },
 ): ClassDecorator => SetMetadata('audit-entity', { entity, options });
-

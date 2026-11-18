@@ -1,4 +1,3 @@
-
 import {
   BadRequestException,
   ConflictException,
@@ -8,15 +7,12 @@ import {
 
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
 import { Category } from './entities/category.entity.js';
 import { Department } from '../department/entities/department.entity.js';
 import { Complaint } from '../complaints/entities/complaint.entity.js';
-
 import { CreateCategoryDto } from './dto/create-category.dto.js';
 import { UpdateCategoryDto } from './dto/update-category.dto.js';
 import { CategoryQueryDto } from './dto/category-query.dto.js';
-
 import { paginate } from '../common/helpers/paginate.helper.js';
 
 @Injectable()
@@ -43,9 +39,7 @@ export class CategoriesService {
     }
 
     if (!department.isActive) {
-      throw new BadRequestException(
-        'The department is not active',
-      );
+      throw new BadRequestException('The department is not active');
     }
 
     const duplicate = await this.categoryRepo
@@ -119,12 +113,9 @@ export class CategoriesService {
     }
 
     if (query.search) {
-      qb.andWhere(
-        '(c.name ILIKE :search OR c.description ILIKE :search)',
-        {
-          search: `%${query.search}%`,
-        },
-      );
+      qb.andWhere('(c.name ILIKE :search OR c.description ILIKE :search)', {
+        search: `%${query.search}%`,
+      });
     }
 
     const [items, total] = await qb
@@ -149,13 +140,8 @@ export class CategoriesService {
 
     if (
       !category ||
-      (
-        actor?.role !== 'ADMIN' &&
-        (
-          !category.isActive ||
-          !category.department?.isActive
-        )
-      )
+      (actor?.role !== 'ADMIN' &&
+        (!category.isActive || !category.department?.isActive))
     ) {
       throw new NotFoundException('Category not found');
     }
@@ -184,13 +170,11 @@ export class CategoriesService {
       throw new NotFoundException('Category not found');
     }
 
-    const targetDepartmentId =
-      dto.departmentId ?? category.departmentId;
+    const targetDepartmentId = dto.departmentId ?? category.departmentId;
 
     const targetName = dto.name ?? category.name;
 
-    const departmentChanged =
-      targetDepartmentId !== category.departmentId;
+    const departmentChanged = targetDepartmentId !== category.departmentId;
 
     const nameChanged =
       targetName.toLowerCase() !== category.name.toLowerCase();
@@ -205,9 +189,7 @@ export class CategoriesService {
       }
 
       if (!department.isActive) {
-        throw new BadRequestException(
-          'The department is not active',
-        );
+        throw new BadRequestException('The department is not active');
       }
 
       const complaintCount = await this.complaintRepo.count({

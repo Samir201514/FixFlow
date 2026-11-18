@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, ParseIntPipe } from '@nestjs/common';
 import { ComplaintAttachmentService } from './complaint-attachment.service.js';
 import { CreateComplaintAttachmentDto } from './dto/create-complaint-attachment.dto.js';
 import { UpdateComplaintAttachmentDto } from './dto/update-complaint-attachment.dto.js';
@@ -11,39 +11,31 @@ import type { AuthUser } from '../common/interfaces/auth-user.interface.js';
 export class ComplaintAttachmentController {
     constructor(private readonly complaintAttachmentService: ComplaintAttachmentService) { }
     @Post()
-    create(
+    async create(
     @Body()
     dto: CreateComplaintAttachmentDto, 
     @CurrentUser()
     user: AuthUser) {
-        const data = dto as any;
-        return this.complaintAttachmentService.create(data.complaintId ?? 0, user?.userId ?? 0, data);
-    }
-
-    @Get()
-    findAll() {
-        return this.complaintAttachmentService.findAll();
-    }
-    @Get(':id')
-    findOne(
-    @Param('id')
-    id: string) {
-        return this.complaintAttachmentService.findOne(+id);
-    }
+        return this.complaintAttachmentService.create(
+            dto.complaintId,
+            user.userId,
+            dto,
+        );
+    }   
 
     @Patch(':id')
-    update(
-    @Param('id')
-    id: string, 
+    async update(
+    @Param('id', ParseIntPipe)
+    id: number, 
     @Body()
     updateComplaintAttachmentDto: UpdateComplaintAttachmentDto) {
-        return this.complaintAttachmentService.update(+id, updateComplaintAttachmentDto);
+        return await this.complaintAttachmentService.update(id, updateComplaintAttachmentDto);
     }
     
     @Delete(':id')
     remove(
-    @Param('id')
-    id: string) {
-        return this.complaintAttachmentService.remove(+id);
+    @Param('id', ParseIntPipe)
+    id: number) {
+        return this.complaintAttachmentService.remove(id);
     }
 }

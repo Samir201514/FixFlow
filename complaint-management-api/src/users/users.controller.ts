@@ -13,12 +13,18 @@ import { CreateUserDto } from './dto/create-user.dto.js';
 import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
 import { RolesGuard } from '../common/guards/roles.guard.js';
 import { UserRoles } from '../common/enums/user-roles.enum.js';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+} from '@nestjs/swagger';
 import { Roles } from '../common/decorators/roles.decorator.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
@@ -35,7 +41,6 @@ export class UsersController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard)
   @ApiOperation({ summary: 'Update a user' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
   @ApiResponse({ status: 200, description: 'User updated successfully' })
@@ -57,7 +62,6 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRoles.ADMIN)
   @ApiOperation({ summary: 'Deactivate and delete a user' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
