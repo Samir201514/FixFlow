@@ -1,0 +1,7 @@
+export enum NotificationType {
+  ASSIGNED = 'ASSIGNED',
+  STATUS_UPDATE = 'STATUS_UPDATE',
+  COMMENT = 'COMMENT',
+  RESOLVED = 'RESOLVED',
+  CLOSED = 'CLOSED',
+}
