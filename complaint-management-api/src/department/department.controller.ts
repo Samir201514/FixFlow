@@ -10,16 +10,19 @@ import {
   Query,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { DepartmentsService } from "./departments.service.js";
+import { DepartmentsService } from "./department.service.js";
 import { Department } from "./entities/department.entity.js";
 import { CreateDepartmentDto } from "./dto/create-department.dto.js";
 import { UpdateDepartmentDto } from "./dto/update-department.dto.js";
 import { DepartmentQueryDto } from "./dto/department-query.dto.js";
-import { Roles } from "../auth/decorators/roles.decorator.js";
-import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
+
+//import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
 import { AuditEntity } from "../common/decorators/audit-entity.decorator.js";
-import { UserRole } from "../users/enums/user-role.enum.js";
+//import { UserRole } from "../users/enums/user-role.enum.js";
 import { User } from "../users/entities/user.entity.js";
+import { Roles } from "../common/decorators/roles.decorator.js";
+import { UserRoles } from "../common/enums/user-roles.enum.js";
+import { CurrentUser } from "../common/decorators/current-user.decorator.js";
 
 @ApiTags("Departments")
 @ApiBearerAuth()
@@ -31,7 +34,7 @@ export class DepartmentsController {
 
 
   @Post()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   create(@Body() dto: CreateDepartmentDto) {
     return this.departmentsService.create(dto);
   }
@@ -50,7 +53,7 @@ export class DepartmentsController {
 
   // PATCH /departments/5 : update only admin
   @Patch(":id")
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   update(
     @Param("id", ParseIntPipe) id: number,
     @Body() dto: UpdateDepartmentDto,
@@ -60,7 +63,7 @@ export class DepartmentsController {
 
   // DELETE /departments/5 : dlt only admin
   @Delete(":id")
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   remove(@Param("id", ParseIntPipe) id: number) {
     return this.departmentsService.remove(id);
   }

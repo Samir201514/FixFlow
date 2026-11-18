@@ -10,8 +10,9 @@ import {
   type Relation,
 } from "typeorm";
 import { User } from "../../users/entities/user.entity.js"; // miss
-import { Department } from "../../departments/entities/department.entity.js";
+//import { Department } from "../../departments/entities/department.entity.js";
 import { ComplaintAssignment } from "../../complaint-assignments/entities/complaint-assignment.entity.js"; // miss
+import { Department } from "../../department/entities/department.entity.js";
 
 @Entity("staff_profiles")
 export class StaffProfile {

@@ -8,13 +8,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Not, Repository } from "typeorm";
 import { Department } from "./entities/department.entity.js";
 import { User } from "../users/entities/user.entity.js"; // miss
-import { UserRole } from "../users/enums/user-role.enum.js"; // miss
+//import { UserRole } from "../users/enums/user-role.enum.js"; // miss
 import { StaffProfile } from "../staff-profile/entities/staff-profile.entity.js";
 import { Category } from "../categories/entities/category.entity.js"; // miss
 import { CreateDepartmentDto } from "./dto/create-department.dto.js";
 import { UpdateDepartmentDto } from "./dto/update-department.dto.js";
 import { DepartmentQueryDto } from "./dto/department-query.dto.js";
-import { paginate } from "../common/utils/paginate.js";
+import { UserRoles } from "../common/enums/user-roles.enum.js";
+import { paginate } from "../common/helpers/paginate.helper.js";
+//import { paginate } from "../common/utils/paginate.js";
 
 @Injectable()
 export class DepartmentsService {
@@ -51,7 +53,7 @@ export class DepartmentsService {
   async findAll(query: DepartmentQueryDto, actor: User) {
     const page = query.page ?? 1;
     const limit = query.limit ?? 10;
-    const isAdmin = actor.role === UserRole.ADMIN;
+    const isAdmin = actor.role === UserRoles.ADMIN;
 
     const qb = this.departmentRepo
       .createQueryBuilder("d")
@@ -94,7 +96,7 @@ export class DepartmentsService {
       throw new NotFoundException("Department not found");
     }
 
-    const isAdmin = actor.role === UserRole.ADMIN;
+    const isAdmin = actor.role === UserRoles.ADMIN;
     if (!isAdmin && !department.isActive) {
       throw new NotFoundException("Department not found");
     }
@@ -114,7 +116,7 @@ export class DepartmentsService {
       const count = await this.departmentRepo
         .createQueryBuilder("d")
         .where("LOWER(d.name) = LOWER(:name)", { name: dto.name })
-        .andWhere("d.departmentId != :id", { id }) // নিজেকে বাদ দিই
+        .andWhere("d.departmentId != :id", { id }) 
         .getCount();
 
       if (count > 0) {
@@ -169,14 +171,14 @@ export class DepartmentsService {
 
   // head jachai
   private async checkHead(userId: number, departmentId: number) {
-    // ১. ইউজার আছে কি?
+    
     const user = await this.userRepo.findOne({ where: { userId } });
     if (!user) {
       throw new NotFoundException("User not found");
     }
 
     // ২. user active naki staff ?
-    if (!user.isActive || user.role !== UserRole.STAFF) {
+    if (!user.isActive || user.role !== UserRoles.STAFF) {
       throw new BadRequestException("The head must be an active staff member");
     }
 

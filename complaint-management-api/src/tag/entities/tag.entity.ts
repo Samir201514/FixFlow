@@ -5,7 +5,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
-import { ComplaintTag } from "../../complaints/entities/complaint.entity.js"; // P1's junction entity
+import { ComplaintTag } from "../../complaint-tags/entities/complaint-tag.entity.js";
+//import { ComplaintTag } from "../../complaints/entities/complaint.entity.js"; // P1's junction entity
 
 @Entity("tags")
 export class Tag {
@@ -21,7 +22,6 @@ export class Tag {
   @CreateDateColumn({ type: "timestamptz" })
   createdAt: Date;
 
-  // Inverse side only. The FK tag_id lives on ComplaintTag, so no @JoinTable here.
-  @OneToMany(() => ComplaintTag, (ct) => ct.tag)
+  @OneToMany(() => ComplaintTag, (ct) => ct.tagId)
   complaintTags: ComplaintTag[];
 }

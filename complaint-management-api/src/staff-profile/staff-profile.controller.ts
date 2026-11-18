@@ -10,15 +10,19 @@ import {
   Query,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
-import { StaffProfilesService } from "./staff-profiles.service.js";
+//import { StaffProfilesService } from "./staff-profiles.service.js";
 import { CreateStaffProfileDto } from "./dto/create-staff-profile.dto.js";
 import { UpdateStaffProfileDto } from "./dto/update-staff-profile.dto.js";
 import { StaffQueryDto } from "./dto/staff-query.dto.js";
 import { StaffProfile } from "./entities/staff-profile.entity.js";
-import { Roles } from "../auth/decorators/roles.decorator.js";
-import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
+//import { Roles } from "../auth/decorators/roles.decorator.js";
+//import { CurrentUser } from "../auth/decorators/current-user.decorator.js";
 import { AuditEntity } from "../common/decorators/audit-entity.decorator.js";
-import { UserRole } from "../users/enums/user-role.enum.js";
+//import { UserRole } from "../users/enums/user-role.enum.js";
+import { StaffProfilesService } from "./staff-profile.service.js";
+import { Roles } from "../common/decorators/roles.decorator.js";
+import { CurrentUser } from "../common/decorators/current-user.decorator.js";
+import { UserRoles } from "../common/enums/user-roles.enum.js";
 
 @ApiTags("Staff Profiles")
 @ApiBearerAuth()
@@ -28,28 +32,28 @@ export class StaffProfilesController {
   constructor(private readonly service: StaffProfilesService) {}
 
   @Get()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   @HttpCode(200)
   findAll(@Query() query: StaffQueryDto) {
     return this.service.findAll(query);
   }
 
   @Get(":id")
-  @Roles(UserRole.ADMIN, UserRole.STAFF)
+  @Roles(UserRoles.ADMIN, UserRoles.STAFF)
   @HttpCode(200)
   findOne(@Param("id", ParseIntPipe) id: number, @CurrentUser() actor: any) {
     return this.service.findOne(id, actor);
   }
 
   @Post()
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   @HttpCode(201)
   create(@Body() dto: CreateStaffProfileDto) {
     return this.service.create(dto);
   }
 
   @Patch(":id")
-  @Roles(UserRole.ADMIN)
+  @Roles(UserRoles.ADMIN)
   @HttpCode(200)
   update(
     @Param("id", ParseIntPipe) id: number,

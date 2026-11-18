@@ -9,12 +9,15 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Brackets, Not, Repository } from "typeorm";
 import { StaffProfile } from "./entities/staff-profile.entity.js";
 import { User } from "../users/entities/user.entity.js";
-import { Department } from "../departments/entities/department.entity.js";
-import { UserRole } from "../users/enums/user-role.enum.js";
-import { paginate } from "../common/utils/paginate.js";
+//import { Department } from "../departments/entities/department.entity.js";
+//import { UserRole } from "../users/enums/user-role.enum.js";
+//import { paginate } from "../common/utils/paginate.js";
 import { CreateStaffProfileDto } from "./dto/create-staff-profile.dto.js";
 import { UpdateStaffProfileDto } from "./dto/update-staff-profile.dto.js";
 import { StaffQueryDto } from "./dto/staff-query.dto.js";
+import { Department } from "../department/entities/department.entity.js";
+import { UserRoles } from "../common/enums/user-roles.enum.js";
+import { paginate } from "../common/helpers/paginate.helper.js";
 
 @Injectable()
 export class StaffProfilesService {
@@ -57,7 +60,7 @@ export class StaffProfilesService {
   async create(dto: CreateStaffProfileDto) {
     const user = await this.userRepo.findOne({ where: { userId: dto.userId } });
     if (!user) throw new NotFoundException("User not found");
-    if (!user.isActive || user.role !== UserRole.STAFF) {
+    if (!user.isActive || user.role !== UserRoles.STAFF) {
       throw new BadRequestException("The user must be an active STAFF account");
     }
 
@@ -125,9 +128,9 @@ export class StaffProfilesService {
     };
   }
 
-  async findOne(id: number, actor: { userId: number; role: UserRole }) {
+  async findOne(id: number, actor: { userId: number; role: UserRoles }) {
     const profile = await this.load(id);
-    if (actor.role === UserRole.STAFF && profile.userId !== actor.userId) {
+    if (actor.role === UserRoles.STAFF && profile.userId !== actor.userId) {
       throw new ForbiddenException("You can only view your own profile");
     }
     return {
