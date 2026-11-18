@@ -11,14 +11,15 @@ import { ComplaintHistoryModule } from '../complaint-history/complaint-history.m
 import { NotificationsModule } from '../notifications/notifications.module.js';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Complaint, Category, ComplaintAssignment, StaffProfile]),
-    ComplaintTagModule,
-    ComplaintHistoryModule,
-    NotificationsModule,
-  ],
-  controllers: [ComplaintsController],
-  providers: [ComplaintsService],
-  exports: [ComplaintsService, TypeOrmModule],
+    imports: [
+        TypeOrmModule.forFeature([Complaint, Category, ComplaintAssignment, StaffProfile]),
+        ComplaintTagModule,
+        ComplaintHistoryModule,
+        NotificationsModule,
+    ],
+    controllers: [ComplaintsController],
+    providers: [ComplaintsService],
+    exports: [ComplaintsService, TypeOrmModule],
 })
-export class ComplaintsModule {}
+export class ComplaintsModule {
+}
