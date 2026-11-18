@@ -1,26 +1,51 @@
 import { Injectable } from '@nestjs/common';
-import { CreateComplaintHistoryDto } from './dto/create-complaint-history.dto.js';
-import { UpdateComplaintHistoryDto } from './dto/update-complaint-history.dto.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import { EntityManager, Repository } from 'typeorm';
+import { ComplaintHistory } from './entities/complaint-history.entity.js';
+import { ComplaintStatus } from '../complaints/enums/complaint-status.enum.js';
+
+export interface HistoryData {
+  complaintId: number;
+  changedById: number;
+  oldStatus: ComplaintStatus | null;
+  newStatus: ComplaintStatus;
+  remarks?: string;
+}
 
 @Injectable()
 export class ComplaintHistoryService {
-  create(createComplaintHistoryDto: CreateComplaintHistoryDto) {
-    return 'This action adds a new complaintHistory';
+  constructor(
+    @InjectRepository(ComplaintHistory)
+    private readonly historyRepo: Repository<ComplaintHistory>,
+  ) {}
+
+  // must run on the caller's manager, so the row is part of the caller's transaction
+  async record(manager: EntityManager, data: HistoryData) {
+    const repo = manager.getRepository(ComplaintHistory);
+    return await repo.save(repo.create(data));
   }
 
-  findAll() {
-    return `This action returns all complaintHistory`;
-  }
+  async findByComplaint(complaintId: number) {
+    const rows = await this.historyRepo
+      .createQueryBuilder('h')
+      .innerJoin('h.changedBy', 'u')
+      .addSelect(['u.userId', 'u.name', 'u.role'])
+      .where('h.complaintId = :complaintId', { complaintId })
+      .orderBy('h.changedAt', 'ASC')
+      .addOrderBy('h.historyId', 'ASC')
+      .getMany();
 
-  findOne(id: number) {
-    return `This action returns a #${id} complaintHistory`;
-  }
-
-  update(id: number, updateComplaintHistoryDto: UpdateComplaintHistoryDto) {
-    return `This action updates a #${id} complaintHistory`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} complaintHistory`;
+    return rows.map((h) => ({
+      historyId: h.historyId,
+      oldStatus: h.oldStatus,
+      newStatus: h.newStatus,
+      remarks: h.remarks,
+      changedAt: h.changedAt,
+      changedBy: {
+        userId: h.changedBy.userId,
+        name: h.changedBy.name,
+        role: h.changedBy.role,
+      },
+    }));
   }
 }

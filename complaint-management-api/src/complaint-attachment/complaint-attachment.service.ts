@@ -1,26 +1,65 @@
-import { Injectable } from '@nestjs/common';
-import { CreateComplaintAttachmentDto } from './dto/create-complaint-attachment.dto.js';
-import { UpdateComplaintAttachmentDto } from './dto/update-complaint-attachment.dto.js';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ComplaintAttachment } from './entities/complaint-attachment.entity.js';
 
 @Injectable()
 export class ComplaintAttachmentService {
-  create(createComplaintAttachmentDto: CreateComplaintAttachmentDto) {
-    return 'This action adds a new complaintAttachment';
+  constructor(
+    @InjectRepository(ComplaintAttachment)
+    private readonly attachmentRepo: Repository<ComplaintAttachment>,
+  ) {}
+
+  async create(
+    complaintId: number, 
+    uploaderId: number, 
+    fileData: { fileName: string; fileUrl: string; fileType?: string }
+  ): Promise<ComplaintAttachment> {
+    const attachment = this.attachmentRepo.create({
+      complaintId,
+      uploaderId,
+      ...fileData,
+    });
+    return await this.attachmentRepo.save(attachment);
   }
 
-  findAll() {
-    return `This action returns all complaintAttachment`;
+  async findAll(): Promise<ComplaintAttachment[]> {
+    return await this.attachmentRepo.find({
+      relations: { uploader: true, complaint: true },
+      order: { uploadedAt: 'DESC' },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} complaintAttachment`;
+  async findOne(attachmentId: number): Promise<ComplaintAttachment> {
+    const attachment = await this.attachmentRepo.findOne({
+      where: { attachmentId },
+      relations: { uploader: true, complaint: true },
+    });
+    
+    if (!attachment) {
+      throw new NotFoundException(`Attachment with ID ${attachmentId} not found`);
+    }
+    return attachment;
   }
 
-  update(id: number, updateComplaintAttachmentDto: UpdateComplaintAttachmentDto) {
-    return `This action updates a #${id} complaintAttachment`;
+  async findByComplaint(complaintId: number): Promise<ComplaintAttachment[]> {
+    return await this.attachmentRepo.find({
+      where: { complaintId },
+      relations: { uploader: true },
+      order: { uploadedAt: 'DESC' },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} complaintAttachment`;
+  async update(attachmentId: number, updateDto: any): Promise<ComplaintAttachment> {
+    const attachment = await this.findOne(attachmentId);
+    Object.assign(attachment, updateDto);
+    return await this.attachmentRepo.save(attachment);
+  }
+
+  async remove(attachmentId: number): Promise<void> {
+    const result = await this.attachmentRepo.delete(attachmentId);
+    if (result.affected === 0) {
+      throw new NotFoundException(`Attachment with ID ${attachmentId} not found`);
+    }
   }
 }
