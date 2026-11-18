@@ -23,7 +23,7 @@ import { RolesGuard } from '../common/guards/roles.guard.js';
 import { Roles } from '../common/decorators/roles.decorator.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 import { AuditEntity } from '../common/decorators/audit-entity.decorator.js';
-import { Role } from '../common/enums/role.enum.js';
+import { UserRoles as Role } from '../common/enums/user-roles.enum.js';
 import type { AuthUser } from '../common/interfaces/auth-user.interface.js';
 
 @ApiTags('Complaints')
@@ -48,7 +48,6 @@ export class ComplaintsController {
     return this.complaintsService.findAll(query);
   }
 
-  // "my" and "track/:trackingCode" must stay above ":id"
   @Get('my')
   @Roles(Role.USER)
   @ApiOperation({ summary: 'List the complaints I reported' })

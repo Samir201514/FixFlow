@@ -23,13 +23,13 @@ import { Category } from '../categories/entities/category.entity.js';
 import { ComplaintAssignment } from '../complaint-assignments/entities/complaint-assignment.entity.js';
 import { AssignmentStatus } from '../complaint-assignments/enums/assignment-status.enum.js';
 import { ComplaintTag } from '../complaint-tags/entities/complaint-tag.entity.js';
-import { ComplaintTagsService } from '../complaint-tags/complaint-tags.service.js';
+import { ComplaintTagService } from '../complaint-tags/complaint-tags.service.js';
 import { ComplaintHistoryService } from '../complaint-history/complaint-history.service.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
-import { NotificationType } from '../notifications/enums/notification-type.enum.js';
-import { Role } from '../common/enums/role.enum.js';
+import { NotificationType } from '../common/enums/notification-type.enum.js';
+import { UserRoles as Role } from '../common/enums/user-roles.enum.js';
 import type { AuthUser } from '../common/interfaces/auth-user.interface.js';
-import { paginate } from '../common/utils/paginate.js';
+import { paginate } from '../common/helpers/paginate.helper.js';
 
 const ACTIVE_STATUSES = [AssignmentStatus.ACTIVE, AssignmentStatus.ACCEPTED];
 
@@ -43,7 +43,7 @@ export class ComplaintsService {
     @InjectRepository(ComplaintAssignment)
     private readonly assignmentRepo: Repository<ComplaintAssignment>,
     private readonly dataSource: DataSource,
-    private readonly tagsService: ComplaintTagsService,
+    private readonly tagsService: ComplaintTagService,
     private readonly historyService: ComplaintHistoryService,
     private readonly notificationsService: NotificationsService,
   ) {}

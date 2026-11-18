@@ -22,10 +22,10 @@ import { Category } from '../categories/entities/category.entity.js';
 import { StaffProfile } from '../staff-profile/entities/staff-profile.entity.js';
 import { ComplaintHistoryService } from '../complaint-history/complaint-history.service.js';
 import { NotificationsService } from '../notifications/notifications.service.js';
-import { NotificationType } from '../notifications/enums/notification-type.enum.js';
-import { Role } from '../common/enums/role.enum.js';
+import { NotificationType } from '../common/enums/notification-type.enum.js';
+import { UserRoles as Role } from '../common/enums/user-roles.enum.js';
 import type { AuthUser } from '../common/interfaces/auth-user.interface.js';
-import { paginate } from '../common/utils/paginate.js';
+import { paginate } from '../common/helpers/paginate.helper.js';
 
 const ACTIVE_STATUSES = [AssignmentStatus.ACTIVE, AssignmentStatus.ACCEPTED];
 

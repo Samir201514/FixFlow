@@ -1,10 +1,9 @@
 import { ConflictException, ForbiddenException } from '@nestjs/common';
 import { ComplaintStatus } from '../enums/complaint-status.enum.js';
-import { Role } from '../../common/enums/role.enum.js';
+import { UserRoles as Role } from '../../common/enums/user-roles.enum.js';
 
 const S = ComplaintStatus;
 
-// from -> to -> roles that may make the move
 const transitions: Partial<
   Record<ComplaintStatus, Partial<Record<ComplaintStatus, Role[]>>>
 > = {
