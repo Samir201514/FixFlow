@@ -1,34 +1,41 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { ComplaintTagsService } from './complaint-tags.service.js';
+import { Controller, Get, Post, Delete, Body, Param, UseGuards } from '@nestjs/common';
+import { ApiTags, ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
+import { ComplaintTagService } from './complaint-tags.service.js';
 import { CreateComplaintTagDto } from './dto/create-complaint-tag.dto.js';
-import { UpdateComplaintTagDto } from './dto/update-complaint-tag.dto.js';
 
-@Controller('complaint-tags')
-export class ComplaintTagsController {
-  constructor(private readonly complaintTagsService: ComplaintTagsService) {}
+import { JwtGuards } from '../auth/jwtGuards.js';
+import { RolesGuard } from '../auth/roles.guard.js';
+import { Roles } from '../auth/roles.decorator.js';
 
-  @Post()
-  create(@Body() createComplaintTagDto: CreateComplaintTagDto) {
-    return this.complaintTagsService.create(createComplaintTagDto);
+@ApiTags('Complaint Tags')
+@ApiBearerAuth()
+@UseGuards(JwtGuards)
+@Controller('complaints')
+export class ComplaintTagController {
+  constructor(private readonly tagService: ComplaintTagService) {}
+
+  @Post(':id/tags')
+  @UseGuards(RolesGuard)
+  @Roles('admin', 'staff')
+  @ApiOperation({ summary: 'Add a tag to a complaint (Admin/Staff)' })
+  addTag(
+    @Param('id') complaintId: string,
+    @Body() dto: CreateComplaintTagDto,
+  ) {
+    return this.tagService.addTag(+complaintId, dto);
   }
 
-  @Get()
-  findAll() {
-    return this.complaintTagsService.findAll();
+  @Get(':id/tags')
+  @ApiOperation({ summary: 'Get all tags for a specific complaint' })
+  getTagsForComplaint(@Param('id') complaintId: string) {
+    return this.tagService.findByComplaint(+complaintId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.complaintTagsService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateComplaintTagDto: UpdateComplaintTagDto) {
-    return this.complaintTagsService.update(+id, updateComplaintTagDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.complaintTagsService.remove(+id);
+  @Delete('tags/:tagId')
+  @UseGuards(RolesGuard)
+  @Roles('admin', 'staff')
+  @ApiOperation({ summary: 'Remove a tag by its ID (Admin/Staff)' })
+  removeTag(@Param('tagId') tagId: string) {
+    return this.tagService.removeTag(+tagId);
   }
 }

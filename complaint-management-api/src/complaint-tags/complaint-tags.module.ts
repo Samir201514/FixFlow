@@ -1,9 +1,13 @@
 import { Module } from '@nestjs/common';
-import { ComplaintTagsService } from './complaint-tags.service.js';
-import { ComplaintTagsController } from './complaint-tags.controller.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { ComplaintTagService } from './complaint-tags.service.js';
+import { ComplaintTag } from './entities/complaint-tag.entity.js';
+import { ComplaintTagController } from './complaint-tags.controller.js';
 
 @Module({
-  controllers: [ComplaintTagsController],
-  providers: [ComplaintTagsService],
+  imports: [TypeOrmModule.forFeature([ComplaintTag])],
+  controllers: [ComplaintTagController],
+  providers: [ComplaintTagService],
+  exports: [ComplaintTagService],
 })
-export class ComplaintTagsModule {}
+export class ComplaintTagModule {}
