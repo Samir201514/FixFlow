@@ -1,9 +1,15 @@
 import { Module } from '@nestjs/common';
-import { StaffProfileService } from './staff-profile.service.js';
-import { StaffProfileController } from './staff-profile.controller.js';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { StaffProfile } from './entities/staff-profile.entity.js';
+import { User } from '../users/entities/user.entity.js';
+import { StaffProfilesController } from './staff-profile.controller.js';
+import { StaffProfilesService } from './staff-profile.service.js';
+import { Department } from '../department/entities/department.entity.js';
 
 @Module({
-  controllers: [StaffProfileController],
-  providers: [StaffProfileService],
+  imports: [TypeOrmModule.forFeature([StaffProfile, User, Department])],
+  controllers: [StaffProfilesController],
+  providers: [StaffProfilesService],
+  exports: [StaffProfilesService],
 })
-export class StaffProfileModule {}
+export class StaffProfilesModule {}

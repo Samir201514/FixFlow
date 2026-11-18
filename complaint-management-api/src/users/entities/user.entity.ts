@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { StaffProfile } from '../../staff-profile/entities/staff-profile.entity.js';
 import { Complaint } from '../../complaints/entities/complaint.entity.js';
@@ -47,18 +48,15 @@ export class User {
   @DeleteDateColumn({ type: 'timestamptz' })
   deletedAt: Date;
 
-  // @OneToOne('staff-profile', (staffProfile: StaffProfile) => {
-  //   staffProfile.user;
-  // })
-  // staffProfile: StaffProfile;
+  @OneToOne(() => StaffProfile, (staffProfile) => staffProfile.user)
+  staffProfile: Relation<StaffProfile>;
 
-  // @OneToMany('complaint', (complaint: Complaint) => {
-  //   complaint.user;
-  // })
-  // complaint: Complaint;
+  @OneToMany(() => Complaint, (complaint: Complaint) => complaint.reporter)
+  complaint: Relation<Complaint[]>;
 
-  // @OneToMany('notification', (notification: Notification) => {
-  //   notification.user;
-  // })
-  // notification: Notification;
+  @OneToMany(
+    () => Notification,
+    (notification: Notification) => notification.user,
+  )
+  notification: Relation<Notification[]>;
 }

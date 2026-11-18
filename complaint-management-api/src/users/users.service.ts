@@ -1,7 +1,9 @@
 import { ConfigService } from '@nestjs/config';
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -13,6 +15,7 @@ import * as bcrypt from 'bcrypt';
 import { Department } from '../department/entities/department.entity.js';
 import { ComplaintAssignment } from '../complaint-assignments/entities/complaint-assignment.entity.js';
 import { FindUserDto } from './dto/find-user.dto.js';
+import { UserRoles } from '../common/enums/user-roles.enum.js';
 
 @Injectable()
 export class UsersService {
@@ -122,11 +125,98 @@ export class UsersService {
       .getOne();
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateUser(
+    id: number,
+    dto: UpdateUserDto,
+    actor: { userId: number; role: UserRoles },
+  ): Promise<{ message: string; data: User }> {
+    const user = await this.userRepo.findOne({
+      where: { userId: id },
+      relations: { staffProfile: true },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (actor.role !== UserRoles.ADMIN && actor.userId !== id) {
+      throw new ForbiddenException();
+    }
+
+    const changingRoleOrStatus =
+      dto.role !== undefined || dto.isActive !== undefined;
+
+    if (actor.role !== UserRoles.ADMIN && changingRoleOrStatus) {
+      throw new ForbiddenException('Only an admin can change role or status');
+    }
+
+    if (
+      actor.role === UserRoles.ADMIN &&
+      actor.userId === id &&
+      changingRoleOrStatus
+    ) {
+      throw new ConflictException('You cannot change your own role or status');
+    }
+
+    if (
+      dto.role !== undefined &&
+      dto.role !== UserRoles.STAFF &&
+      user.staffProfile
+    ) {
+      throw new ConflictException('Remove the staff profile first');
+    }
+
+    Object.assign(user, dto);
+
+    const updatedUser = await this.userRepo.save(user);
+
+    return {
+      message: 'User updated successfully',
+      data: updatedUser,
+    };
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async removeUser(
+    id: number,
+    actor: { userId: number; role: UserRoles },
+  ): Promise<{ message: string; data: null }> {
+    const user = await this.userRepo.findOne({
+      where: { userId: id },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (actor.userId === id) {
+      throw new ConflictException('You cannot delete your own account');
+    }
+
+    const assignment = await this.complaintAssignmentRepo
+      .createQueryBuilder('assignment')
+      .innerJoin('assignment.staffProfile', 'staffProfile')
+      .where('staffProfile.userId = :id', { id })
+      .andWhere('assignment.status IN (:...statuses)', {
+        statuses: ['ACTIVE', 'ACCEPTED'],
+      })
+      .getOne();
+
+    if (assignment) {
+      throw new ConflictException('The user has active assignments');
+    }
+
+    await this.departmentRepo.update(
+      { departmentHeadId: id },
+      { departmentHeadId: null },
+    );
+
+    await this.userRepo.update(id, { isActive: false });
+
+    await this.userRepo.softDelete(id);
+
+    return {
+      message: 'User deleted successfully',
+      data: null,
+    };
   }
 }

@@ -1,9 +1,12 @@
 import { Module } from '@nestjs/common';
+import { TypeOrmModule } from '@nestjs/typeorm';
 import { ComplaintAttachmentService } from './complaint-attachment.service.js';
-import { ComplaintAttachmentController } from './complaint-attachment.controller.js';
+import { ComplaintAttachment } from './entities/complaint-attachment.entity.js';
 
 @Module({
-  controllers: [ComplaintAttachmentController],
-  providers: [ComplaintAttachmentService],
+    imports: [TypeOrmModule.forFeature([ComplaintAttachment])],
+    providers: [ComplaintAttachmentService],
+    exports: [ComplaintAttachmentService],
 })
-export class ComplaintAttachmentModule {}
+export class ComplaintAttachmentModule {
+}
