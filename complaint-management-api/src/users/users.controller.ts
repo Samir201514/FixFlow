@@ -7,6 +7,8 @@ import {
   Delete,
   Param,
   ParseIntPipe,
+  Get,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service.js';
 import { CreateUserDto } from './dto/create-user.dto.js';
@@ -22,6 +24,7 @@ import {
 import { Roles } from '../common/decorators/roles.decorator.js';
 import { UpdateUserDto } from './dto/update-user.dto.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
+import { FindUserDto } from './dto/find-user.dto.js';
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -38,6 +41,18 @@ export class UsersController {
   @ApiResponse({ status: 409, description: 'Email already registered' })
   createUser(@Body() createUserDto: CreateUserDto) {
     return this.usersService.createUser(createUserDto);
+  }
+
+  @Get()
+  @Roles(UserRoles.ADMIN)
+  findAll(@Query() query: FindUserDto) {
+    return this.usersService.findAll(query);
+  }
+
+  @Get('email/:email')
+  @Roles(UserRoles.ADMIN)
+  findUserByEmail(@Param('email') email: string) {
+    return this.usersService.findUserByEmail(email);
   }
 
   @Patch(':id')

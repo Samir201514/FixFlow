@@ -83,7 +83,17 @@ export class UsersService {
       totalPages: number;
     };
   }> {
-    const qb = await this.userRepo.createQueryBuilder('user');
+    const qb = this.userRepo
+      .createQueryBuilder('user')
+      .select([
+        'user.userId',
+        'user.name',
+        'user.email',
+        'user.phone',
+        'user.role',
+        'user.isActive',
+        'user.createdAt',
+      ]);
 
     if (qurey.role) {
       qb.andWhere('user.role = :role', { role: qurey.role });
@@ -120,6 +130,30 @@ export class UsersService {
         limit: qurey.limit,
         totalPages: Math.ceil(total / qurey.limit),
       },
+    };
+  }
+
+  async findUserByEmail(email: string) {
+    const user = await this.userRepo.findOne({
+      where: { email: email.trim().toLowerCase() },
+      select: {
+        userId: true,
+        name: true,
+        email: true,
+        phone: true,
+        role: true,
+        isActive: true,
+        createdAt: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      message: 'User retrieved successfully',
+      data: user,
     };
   }
 
