@@ -200,7 +200,7 @@ export class ComplaintAssignmentService {
         notifications.push({
           userId: oldProfile.userId,
           complaintId: complaint.complaintId,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Assignment withdrawn',
           message: `Complaint ${complaint.trackingCode} was given to another staff member.`,
         });
@@ -252,14 +252,14 @@ export class ComplaintAssignmentService {
         {
           userId: complaint.reporterId,
           complaintId: complaint.complaintId,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Work has started',
           message: `Work on your complaint ${complaint.trackingCode} has started.`,
         },
         {
           userId: assignment.assignedById,
           complaintId: complaint.complaintId,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Assignment accepted',
           message: `The assignment for complaint ${complaint.trackingCode} was accepted.`,
         },
@@ -311,7 +311,7 @@ export class ComplaintAssignmentService {
         {
           userId: assignment.assignedById,
           complaintId: complaint.complaintId,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Assignment rejected',
           message: `The assignment for complaint ${complaint.trackingCode} was rejected: ${dto.reason}`,
         },
@@ -355,7 +355,7 @@ export class ComplaintAssignmentService {
         {
           userId: complaint.reporterId,
           complaintId: complaint.complaintId,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Progress update',
           message: `Update on ${complaint.trackingCode}: ${dto.remarks}`,
         },

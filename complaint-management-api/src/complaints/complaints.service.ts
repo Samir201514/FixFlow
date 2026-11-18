@@ -369,7 +369,7 @@ export class ComplaintsService {
         {
           userId: complaint.reporterId,
           complaintId: id,
-          type: NotificationType.STATUS_CHANGED,
+          type: NotificationType.STATUS_UPDATE,
           title: 'Complaint under review',
           message: `Your complaint ${complaint.trackingCode} is being reviewed.`,
         },
@@ -415,7 +415,7 @@ export class ComplaintsService {
           {
             userId: lastAssignment.assignedById,
             complaintId: id,
-            type: NotificationType.STATUS_CHANGED,
+            type: NotificationType.STATUS_UPDATE,
             title: 'Complaint closed',
             message: `Complaint ${complaint.trackingCode} was closed by the reporter.`,
           },
@@ -463,7 +463,7 @@ export class ComplaintsService {
           {
             userId: lastAssignment.assignedById,
             complaintId: id,
-            type: NotificationType.REOPENED,
+            type: NotificationType.STATUS_UPDATE,
             title: 'Complaint reopened',
             message: `Complaint ${complaint.trackingCode} was reopened: ${dto.reason}`,
           },
