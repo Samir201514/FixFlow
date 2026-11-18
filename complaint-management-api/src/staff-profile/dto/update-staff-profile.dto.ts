@@ -1,4 +1,6 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateStaffProfileDto } from './create-staff-profile.dto.js';
+import { OmitType, PartialType } from "@nestjs/swagger";
+import { CreateStaffProfileDto } from "./create-staff-profile.dto.js";
 
-export class UpdateStaffProfileDto extends PartialType(CreateStaffProfileDto) {}
+export class UpdateStaffProfileDto extends PartialType(
+  OmitType(CreateStaffProfileDto, ["userId"] as const),
+) {}
