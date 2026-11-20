@@ -35,7 +35,6 @@ export class UsersService {
       email: string;
       phone: string | null;
       role: UserRoles;
-      isActive: boolean;
       createdAt: Date;
     };
   }> {
@@ -67,7 +66,6 @@ export class UsersService {
         email: user.email,
         phone: user.phone,
         role: user.role,
-        isActive: user.isActive,
         createdAt: user.createdAt,
       },
     };
