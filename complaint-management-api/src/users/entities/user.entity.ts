@@ -33,7 +33,7 @@ export class User {
   @Column({ length: 15, nullable: true })
   phone: string;
 
-  @Column({ enum: UserRoles, default: UserRoles.USER })
+  @Column({ type: 'enum', enum: UserRoles, default: UserRoles.USER })
   role: UserRoles;
 
   @Column({ default: true })

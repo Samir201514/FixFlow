@@ -187,7 +187,6 @@ export class ComplaintsService {
             .innerJoin('c.reporter', 'u')
             .addSelect(['u.userId', 'u.name'])
             .leftJoinAndSelect('c.complaintTags', 'ct')
-            .leftJoinAndSelect('ct.tag', 't')
             .leftJoinAndSelect('c.assignments', 'a', 'a.status IN (:...activeStatuses)', { activeStatuses: ACTIVE_STATUSES })
             .leftJoin('a.staffProfile', 'sp')
             .addSelect(['sp.staffProfileId', 'sp.designation'])
@@ -219,11 +218,17 @@ export class ComplaintsService {
                 : null,
         };
     }
+
     async getHistory(id: number, user: AuthUser) {
         await this.assertCanView(id, user);
-        const data = await this.historyService.findByComplaint(id);
+
+        const history = await this.historyService.findByComplaint(id);
+
+        const data = history.map(({ historyId, ...rest }) => rest);
+
         return { message: 'History retrieved successfully', data };
     }
+    
     async update(id: number, dto: UpdateComplaintDto, user: AuthUser) {
         const complaint = await this.loadEditable(id, user);
         if (dto.categoryId !== undefined) {

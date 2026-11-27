@@ -7,16 +7,14 @@ import {
 import { InjectRepository } from "@nestjs/typeorm";
 import { Not, Repository } from "typeorm";
 import { Department } from "./entities/department.entity.js";
-import { User } from "../users/entities/user.entity.js"; // miss
-//import { UserRole } from "../users/enums/user-role.enum.js"; // miss
+import { User } from "../users/entities/user.entity.js";
 import { StaffProfile } from "../staff-profile/entities/staff-profile.entity.js";
-import { Category } from "../categories/entities/category.entity.js"; // miss
+import { Category } from "../categories/entities/category.entity.js";
 import { CreateDepartmentDto } from "./dto/create-department.dto.js";
 import { UpdateDepartmentDto } from "./dto/update-department.dto.js";
 import { DepartmentQueryDto } from "./dto/department-query.dto.js";
 import { UserRoles } from "../common/enums/user-roles.enum.js";
 import { paginate } from "../common/helpers/paginate.helper.js";
-//import { paginate } from "../common/utils/paginate.js";
 
 @Injectable()
 export class DepartmentsService {

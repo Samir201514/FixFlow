@@ -53,7 +53,7 @@ import { TagsModule } from './tag/tag.module.js';
         password: configService.getOrThrow<string>('DB_PASSWORD'),
         database: configService.getOrThrow<string>('DB_DATABASE'),
         autoLoadEntities: true,
-        synchronize: configService.get<string>('NODE_ENV') !== 'production',
+        synchronize: true,
       }),
     }),
   ],

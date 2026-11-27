@@ -36,7 +36,6 @@ export class AuthService {
         email: user.data.email,
         phone: user.data.phone,
         role: user.data.role,
-        isActive: user.data.isActive,
         createdAt: user.data.createdAt,
       },
     };
@@ -74,7 +73,7 @@ export class AuthService {
       message: 'Login Successful',
       data: {
         accessToken: access_token,
-        expiresIn: time.exp - time.iat,
+        expiresIn: `${(time.exp - time.iat)/60} min`,
         user: {
           userId: user.userId,
           name: user.name,
@@ -82,7 +81,6 @@ export class AuthService {
           role: user.role,
         },
       },
-      meta: null,
     };
   }
 

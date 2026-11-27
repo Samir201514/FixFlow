@@ -22,7 +22,7 @@ import type { AuthUser } from '../common/interfaces/auth-user.interface.js';
 export class ComplaintsController {
     constructor(private readonly complaintsService: ComplaintsService) { }
     @Post()
-    @Roles(Role.USER)
+    @Roles(Role.ADMIN, Role.USER)
     @ApiOperation({ summary: 'Submit a complaint' })
     create(
     @CurrentUser()

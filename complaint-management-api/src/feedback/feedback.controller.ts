@@ -23,14 +23,13 @@ import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
 @ApiTags('Feedback')
 @ApiBearerAuth()
 @AuditEntity(Feedback, { loadBefore: false })
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller()
 export class FeedbackController {
   constructor(private readonly feedbackService: FeedbackService) {}
 
   @Post('complaints/:id/feedback')
-  @UseGuards(RolesGuard)
-  @Roles(UserRoles.ADMIN)
+  @Roles(UserRoles.USER)
   create(
     @Param('id', ParseIntPipe) id: number,
     @Body() dto: CreateFeedbackDto,
@@ -48,7 +47,6 @@ export class FeedbackController {
   }
 
   @Get('feedback')
-  @UseGuards(RolesGuard)
   @Roles(UserRoles.ADMIN)
   findAll(@Query() query: FeedbackQueryDto) {
     return this.feedbackService.findAll(query);
