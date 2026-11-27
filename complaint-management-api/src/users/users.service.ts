@@ -71,7 +71,7 @@ export class UsersService {
     };
   }
 
-  async findAll(qurey: FindUserDto): Promise<{
+  async findAll(query: FindUserDto): Promise<{
     message: string;
     data: User[];
     meta: {
@@ -93,65 +93,43 @@ export class UsersService {
         'user.createdAt',
       ]);
 
-    if (qurey.role) {
-      qb.andWhere('user.role = :role', { role: qurey.role });
+    if (query.role) {
+      qb.andWhere('user.role = :role', { role: query.role });
     }
 
-    if (qurey.isActive !== undefined) {
-      qb.andWhere('user.isActive = :isActive', { isActive: qurey.isActive });
+    if (query.isActive !== undefined) {
+      qb.andWhere('user.isActive = :isActive', {
+        isActive: query.isActive,
+      });
     }
 
-    if (qurey.search) {
+    if (query.search) {
       qb.andWhere(
         new Brackets((q) => {
-          q.where('user.name ILIKE :name', {
-            name: `%${qurey.search}%`,
-          }).orWhere('user.email ILIKE :email', {
-            email: `%${qurey.search}%`,
+          q.where('user.name ILIKE :search', {
+            search: `%${query.search}%`,
+          }).orWhere('user.email ILIKE :search', {
+            search: `%${query.search}%`,
           });
         }),
       );
     }
 
-    const [items, total] = await qb
+    const [users, total] = await qb
       .orderBy('user.createdAt', 'DESC')
-      .skip((qurey.page - 1) * qurey.limit)
-      .take(qurey.limit)
+      .skip((query.page - 1) * query.limit)
+      .take(query.limit)
       .getManyAndCount();
 
     return {
-      message: 'Users retrieved successfully',
-      data: items,
+      message: `${total} Users Retrieved Successfully`,
+      data: users,
       meta: {
-        total: total,
-        page: qurey.page,
-        limit: qurey.limit,
-        totalPages: Math.ceil(total / qurey.limit),
+        total,
+        page: query.page,
+        limit: query.limit,
+        totalPages: Math.ceil(total / query.limit),
       },
-    };
-  }
-
-  async findUserByEmail(email: string) {
-    const user = await this.userRepo.findOne({
-      where: { email: email.trim().toLowerCase() },
-      select: {
-        userId: true,
-        name: true,
-        email: true,
-        phone: true,
-        role: true,
-        isActive: true,
-        createdAt: true,
-      },
-    });
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    return {
-      message: 'User retrieved successfully',
-      data: user,
     };
   }
 

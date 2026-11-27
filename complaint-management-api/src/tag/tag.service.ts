@@ -5,8 +5,6 @@ import {
 } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { DataSource, Repository } from "typeorm";
-//import { paginate } from "../common/utils/paginate.js";
-//import { ComplaintTag } from "../complaints/entities/complaint.entity.js";
 import { CreateTagDto } from "./dto/create-tag.dto.js";
 import { TagQueryDto } from "./dto/tag-query.dto.js";
 import { UpdateTagDto } from "./dto/update-tag.dto.js";
@@ -81,7 +79,6 @@ export class TagsService {
     return { message: "Tag updated successfully", data: saved };
   }
 
-  // Touches two tables (complaint_tags, tags), so it runs in one transaction.
   async remove(id: number) {
     const qr = this.dataSource.createQueryRunner();
     let connected = false;
@@ -101,7 +98,7 @@ export class TagsService {
       transactionStarted = false;
     } catch (err) {
       if (transactionStarted) await qr.rollbackTransaction();
-      throw err; // rethrow so the exception filter formats it
+      throw err;
     } finally {
       if (connected) await qr.release();
     }
