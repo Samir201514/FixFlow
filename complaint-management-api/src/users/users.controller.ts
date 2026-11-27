@@ -19,6 +19,7 @@ import {
   ApiBearerAuth,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
 } from '@nestjs/swagger';
 import { Roles } from '../common/decorators/roles.decorator.js';
@@ -43,16 +44,33 @@ export class UsersController {
     return this.usersService.createUser(createUserDto);
   }
 
-  @Get()
+  @Get('filter')
   @Roles(UserRoles.ADMIN)
+  @ApiOperation({
+    summary: 'Retrieve all users',
+    description:
+      'Retrieve a paginated list of users. Supports filtering by role, active status, and searching by name or email.',
+  })
+  @ApiBearerAuth()
+  @ApiQuery({ name: 'role', enum: UserRoles, required: false })
+  @ApiQuery({ name: 'isActive', type: Boolean, required: false })
+  @ApiQuery({ name: 'search', type: String, required: false })
+  @ApiQuery({ name: 'page', type: Number, required: false, example: 1 })
+  @ApiQuery({ name: 'limit', type: Number, required: false, example: 10 })
+  @ApiResponse({
+    status: 200,
+    description: 'Users retrieved successfully',
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Unauthorized - Missing or invalid JWT token',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Forbidden - Admin access required',
+  })
   findAll(@Query() query: FindUserDto) {
     return this.usersService.findAll(query);
-  }
-
-  @Get('email/:email')
-  @Roles(UserRoles.ADMIN)
-  findUserByEmail(@Param('email') email: string) {
-    return this.usersService.findUserByEmail(email);
   }
 
   @Patch(':id')
@@ -77,7 +95,6 @@ export class UsersController {
   }
 
   @Delete(':id')
-  @Roles(UserRoles.ADMIN)
   @ApiOperation({ summary: 'Deactivate and delete a user' })
   @ApiParam({ name: 'id', type: Number, example: 1 })
   @ApiResponse({ status: 200, description: 'User deleted successfully' })

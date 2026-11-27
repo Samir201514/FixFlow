@@ -8,13 +8,17 @@ import { Request, Response } from 'express';
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  catch(exception: HttpException, host: ArgumentsHost) {
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
-    const sts = exception.getStatus();
+    const sts =
+      exception instanceof HttpException ? exception.getStatus() : 500;
 
-    const exceptionResponse = exception.getResponse();
+    const exceptionResponse =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : 'Internal server error';
 
     const message =
       typeof exceptionResponse === 'string'
@@ -25,7 +29,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     res.status(sts).json({
       success: false,
       statusCode: sts,
-      error: exception.name,
+      error:
+        exception instanceof Error ? exception.name : 'InternalServerError',
       message: message,
       path: req.originalUrl,
       timestamp: new Date().toISOString(),

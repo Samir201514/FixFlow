@@ -1,11 +1,14 @@
-import { Controller, Get, Param, ParseIntPipe, Patch, Query } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Patch, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { NotificationsService } from './notifications.service.js';
 import { CurrentUser } from '../common/decorators/current-user.decorator.js';
 import { NotificationQueryDto } from './dto/notification-query.dto.js';
+import { JwtAuthGuard } from '../common/guards/jwt-auth.guard.js';
+import { RolesGuard } from '../common/guards/roles.guard.js';
 
 @ApiTags('Notifications')
 @ApiBearerAuth()
+@UseGuards(JwtAuthGuard, RolesGuard)
 @Controller('notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
@@ -15,7 +18,6 @@ export class NotificationsController {
     return this.notificationsService.findMine(user.userId, query);
   }
 
-  // Keep this route before :id/read so "read-all" is not parsed as an id.
   @Patch('read-all')
   markAllRead(@CurrentUser() user: any) {
     return this.notificationsService.markAllRead(user.userId);

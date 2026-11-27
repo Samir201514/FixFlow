@@ -27,7 +27,6 @@ export class FeedbackService {
     private readonly complaintRepo: Repository<Complaint>,
   ) {}
 
-  // Create Feedback
   async create(complaintId: number, dto: CreateFeedbackDto, user: any) {
     const complaint = await this.complaintRepo.findOne({
       where: { complaintId },
